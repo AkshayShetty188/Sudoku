@@ -4,7 +4,7 @@ from typing import List, Tuple, Optional
 Grid = List[List[int]]
 
 st.set_page_config(page_title="Sudoku Solver", page_icon="🧩", layout="centered")
-
+st.markdown("## 🎉 Welcome Saathvi !")
 st.title("🧩 Sudoku Solver")
 st.write("Enter a 9×9 Sudoku (use 0 for blanks) and click **Solve**.")
 
