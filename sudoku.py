@@ -205,7 +205,7 @@ def render_editable_grid(initial: Grid, prefix: str) -> Grid:
     return edited
 
 # --------- UI ---------
-tab1, tab2, tab3 = st.tabs(["Paste 9 lines", "Manual grid", "Scan photo"])
+tab1, tab2, tab3 = st.tabs(["Scan photo", "Manual grid", "Paste 9 lines"])
 
 with tab1:
     st.caption("Upload a photo or screenshot of a Sudoku. I’ll detect the grid and read digits for you.")
