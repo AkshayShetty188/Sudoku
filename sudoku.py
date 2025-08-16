@@ -205,9 +205,29 @@ def render_editable_grid(initial: Grid, prefix: str) -> Grid:
     return edited
 
 # --------- UI ---------
-tab1, tab2, tab3 = st.tabs(["Scan photo", "Manual grid", "Paste 9 lines"])
+tab1, tab2, tab3 = st.tabs(["Manual grid", "Scan photo", "Paste 9 lines"])
 
 with tab1:
+    st.caption("Enter numbers directly (leave 0 for blanks).")
+    zero_grid: Grid = [[0]*9 for _ in range(9)]
+    edited_manual = render_editable_grid(zero_grid, prefix="manual")
+    if st.button("Solve from manual grid", type="primary", key="btn-manual"):
+        if not is_consistent(edited_manual):
+            st.error("The given puzzle is inconsistent (violates Sudoku rules).")
+        else:
+            g = [row[:] for row in edited_manual]
+            if solve(g):
+                st.success("Solved ✅")
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.caption("Initial grid")
+                    st.code(stringify(edited_manual))
+                with col2:
+                    st.caption("Solution")
+                    st.code(stringify(g))
+            else:
+                st.warning("This puzzle has no solution (or the solver couldn’t find one).")
+with tab2:
     st.caption("Upload a photo or screenshot of a Sudoku. I’ll detect the grid and read digits for you.")
     uploaded = st.file_uploader("Upload image (JPG/PNG)", type=["jpg","jpeg","png"])
     if uploaded is not None:
@@ -239,27 +259,6 @@ with tab1:
                         st.warning("No solution found. Please correct misread cells and try again.")
         except Exception as e:
             st.error(f"Scan failed: {e}")
-            
-with tab2:
-    st.caption("Enter numbers directly (leave 0 for blanks).")
-    zero_grid: Grid = [[0]*9 for _ in range(9)]
-    edited_manual = render_editable_grid(zero_grid, prefix="manual")
-    if st.button("Solve from manual grid", type="primary", key="btn-manual"):
-        if not is_consistent(edited_manual):
-            st.error("The given puzzle is inconsistent (violates Sudoku rules).")
-        else:
-            g = [row[:] for row in edited_manual]
-            if solve(g):
-                st.success("Solved ✅")
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.caption("Initial grid")
-                    st.code(stringify(edited_manual))
-                with col2:
-                    st.caption("Solution")
-                    st.code(stringify(g))
-            else:
-                st.warning("This puzzle has no solution (or the solver couldn’t find one).")
     
 with tab3:
     sample = "006207300\n900000004\n004010500\n100456003\n040000050\n300721008\n005080200\n800000006\n003602900"
